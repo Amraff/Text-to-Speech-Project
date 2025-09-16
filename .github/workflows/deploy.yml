@@ -2,7 +2,7 @@ name: Deploy infra & lambdas
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   deploy:
