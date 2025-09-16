@@ -59,10 +59,18 @@ jobs:
       - name: Terraform Import existing resources
         working-directory: terraform
         run: |
+          # DynamoDB
           terraform import aws_dynamodb_table.posts polly_posts || true
+
+          # IAM Roles
           terraform import aws_iam_role.lambda_new_post_role lambda_new_post_role || true
           terraform import aws_iam_role.lambda_convert_role lambda_convert_role || true
           terraform import aws_iam_role.lambda_get_role lambda_get_role || true
+
+          # Lambda Functions
+          terraform import aws_lambda_function.new_post polly-new-post || true
+          terraform import aws_lambda_function.convert_to_audio polly-convert-to-audio || true
+          terraform import aws_lambda_function.get_post polly-get-post || true
 
       - name: Terraform Apply
         working-directory: terraform
