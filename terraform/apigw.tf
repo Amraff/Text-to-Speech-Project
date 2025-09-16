@@ -25,6 +25,33 @@ resource "aws_api_gateway_integration" "new_post_integration" {
   uri                     = aws_lambda_function.new_post.invoke_arn
 }
 
+# ✅ CORS for /new_post
+resource "aws_api_gateway_method_response" "new_post_cors" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.new_post.id
+  http_method = aws_api_gateway_method.new_post_post.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = true
+  }
+
+  response_models = {
+    "application/json" = "Empty"
+  }
+}
+
+resource "aws_api_gateway_integration_response" "new_post_cors" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.new_post.id
+  http_method = aws_api_gateway_method.new_post_post.http_method
+  status_code = aws_api_gateway_method_response.new_post_cors.status_code
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = "'*'"
+  }
+}
+
 # /get-post resource + GET
 resource "aws_api_gateway_resource" "get_post" {
   rest_api_id = aws_api_gateway_rest_api.api.id
@@ -37,6 +64,7 @@ resource "aws_api_gateway_method" "get_post_get" {
   resource_id   = aws_api_gateway_resource.get_post.id
   http_method   = "GET"
   authorization = "NONE"
+
   request_parameters = {
     "method.request.querystring.postId" = false
   }
@@ -49,6 +77,33 @@ resource "aws_api_gateway_integration" "get_post_integration" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.get_post.invoke_arn
+}
+
+# ✅ CORS for /get-post
+resource "aws_api_gateway_method_response" "get_post_cors" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.get_post.id
+  http_method = aws_api_gateway_method.get_post_get.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = true
+  }
+
+  response_models = {
+    "application/json" = "Empty"
+  }
+}
+
+resource "aws_api_gateway_integration_response" "get_post_cors" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.get_post.id
+  http_method = aws_api_gateway_method.get_post_get.http_method
+  status_code = aws_api_gateway_method_response.get_post_cors.status_code
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = "'*'"
+  }
 }
 
 # Allow API Gateway to invoke the lambdas
@@ -81,7 +136,9 @@ resource "aws_lambda_permission" "apigw_invoke_convert_to_audio" {
 resource "aws_api_gateway_deployment" "deployment" {
   depends_on = [
     aws_api_gateway_integration.new_post_integration,
-    aws_api_gateway_integration.get_post_integration
+    aws_api_gateway_integration.get_post_integration,
+    aws_api_gateway_integration_response.new_post_cors,
+    aws_api_gateway_integration_response.get_post_cors
   ]
   rest_api_id = aws_api_gateway_rest_api.api.id
 

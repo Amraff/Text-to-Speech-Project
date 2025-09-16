@@ -1,4 +1,4 @@
-var API_BASE_URL = "https://e207zdmodf.execute-api.us-east-1.amazonaws.com/prod";
+var API_BASE_URL = "https://xct9ix3spj.execute-api.us-east-1.amazonaws.com/prod";
 
 document.getElementById("sayButton").onclick = function () {
     var inputData = {
