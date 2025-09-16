@@ -72,9 +72,8 @@ jobs:
           terraform import aws_lambda_function.convert_to_audio polly-convert-to-audio || true
           terraform import aws_lambda_function.get_post polly-get-post || true
 
-          # Lambda Permissions
+          # Lambda Permissions (only the ones that already exist)
           terraform import aws_lambda_permission.apigw_invoke_new_post polly-new-post/AllowAPIGatewayInvokeNewPost || true
-          terraform import aws_lambda_permission.apigw_invoke_convert_to_audio polly-convert-to-audio/AllowAPIGatewayInvokeConvertToAudio || true
           terraform import aws_lambda_permission.apigw_invoke_get_post polly-get-post/AllowAPIGatewayInvokeGetPost || true
 
       - name: Terraform Apply
