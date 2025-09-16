@@ -42,6 +42,8 @@ resource "aws_lambda_function" "get_post" {
   environment {
     variables = {
       DB_TABLE_NAME = aws_dynamodb_table.posts.name
+      BUCKET_NAME   = aws_s3_bucket.mp3_bucket.bucket   # 👈 added
+      AWS_REGION    = var.aws_region                    # 👈 added
     }
   }
 

@@ -1,13 +1,16 @@
 import boto3
 import os
-from boto3.dynamodb.conditions import Key, Attr
+from boto3.dynamodb.conditions import Key
 import json
+
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table(os.environ['DB_TABLE_NAME'])
+
+BUCKET_NAME = os.environ["BUCKET_NAME"]
+REGION = os.environ.get("AWS_REGION", "us-east-1")
 
 def lambda_handler(event, context):
     postId = event.get("queryStringParameters", {}).get("postId", "")
-
-    dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table(os.environ['DB_TABLE_NAME'])
 
     if not postId:
         return {
@@ -19,18 +22,36 @@ def lambda_handler(event, context):
             "body": json.dumps({"error": "Missing or empty postId"})
         }
 
-    if postId == "*":
-        items = table.scan()
-    else:
-        items = table.query(
-            KeyConditionExpression=Key('id').eq(postId)
-        )
+    try:
+        if postId == "*":
+            items = table.scan()["Items"]
+        else:
+            items = table.query(
+                KeyConditionExpression=Key('id').eq(postId)
+            )["Items"]
 
-    return {
-        "statusCode": 200,
-        "headers": {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*"
-        },
-        "body": json.dumps(items["Items"])
-    }
+        # Attach S3 URL if audio is completed
+        for item in items:
+            if item.get("status") == "COMPLETED":
+                item["url"] = f"https://{BUCKET_NAME}.s3.{REGION}.amazonaws.com/{item['id']}.mp3"
+            else:
+                item["url"] = None
+
+        return {
+            "statusCode": 200,
+            "headers": {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*"
+            },
+            "body": json.dumps(items)
+        }
+
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "headers": {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*"
+            },
+            "body": json.dumps({"error": str(e)})
+        }
