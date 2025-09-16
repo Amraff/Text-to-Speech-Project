@@ -29,8 +29,8 @@ resource "aws_iam_role_policy" "lambda_new_post_policy" {
         Resource = aws_dynamodb_table.posts.arn
       },
       {
-        Effect = "Allow",
-        Action = ["sns:Publish"],
+        Effect   = "Allow",
+        Action   = ["sns:Publish"],
         Resource = aws_sns_topic.post_topic.arn
       },
       {
