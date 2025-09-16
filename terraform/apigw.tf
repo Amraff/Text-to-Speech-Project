@@ -1,8 +1,14 @@
+# ────────────────
+# API Gateway REST API root
+# ────────────────
 resource "aws_api_gateway_rest_api" "api" {
-  name = "polly-api"
+  name        = "polly-api"
+  description = "API Gateway for Polly text-to-speech app"
 }
 
+# ────────────────
 # /new_post resource + POST
+# ────────────────
 resource "aws_api_gateway_resource" "new_post" {
   rest_api_id = aws_api_gateway_rest_api.api.id
   parent_id   = aws_api_gateway_rest_api.api.root_resource_id
@@ -25,34 +31,53 @@ resource "aws_api_gateway_integration" "new_post_integration" {
   uri                     = aws_lambda_function.new_post.invoke_arn
 }
 
-# ✅ CORS for /new_post
-resource "aws_api_gateway_method_response" "new_post_cors" {
+# CORS: OPTIONS for /new_post
+resource "aws_api_gateway_method" "new_post_options" {
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  resource_id   = aws_api_gateway_resource.new_post.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "new_post_options" {
   rest_api_id = aws_api_gateway_rest_api.api.id
   resource_id = aws_api_gateway_resource.new_post.id
-  http_method = aws_api_gateway_method.new_post_post.http_method
+  http_method = aws_api_gateway_method.new_post_options.http_method
+  type        = "MOCK"
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+resource "aws_api_gateway_method_response" "new_post_options" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.new_post.id
+  http_method = aws_api_gateway_method.new_post_options.http_method
   status_code = "200"
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin" = true
-  }
-
-  response_models = {
-    "application/json" = "Empty"
+    "method.response.header.Access-Control-Allow-Origin"  = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Headers" = true
   }
 }
 
-resource "aws_api_gateway_integration_response" "new_post_cors" {
+resource "aws_api_gateway_integration_response" "new_post_options" {
   rest_api_id = aws_api_gateway_rest_api.api.id
   resource_id = aws_api_gateway_resource.new_post.id
-  http_method = aws_api_gateway_method.new_post_post.http_method
-  status_code = aws_api_gateway_method_response.new_post_cors.status_code
+  http_method = aws_api_gateway_method.new_post_options.http_method
+  status_code = aws_api_gateway_method_response.new_post_options.status_code
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin" = "'*'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+    "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,POST'"
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
   }
 }
 
+# ────────────────
 # /get-post resource + GET
+# ────────────────
 resource "aws_api_gateway_resource" "get_post" {
   rest_api_id = aws_api_gateway_rest_api.api.id
   parent_id   = aws_api_gateway_rest_api.api.root_resource_id
@@ -79,34 +104,53 @@ resource "aws_api_gateway_integration" "get_post_integration" {
   uri                     = aws_lambda_function.get_post.invoke_arn
 }
 
-# ✅ CORS for /get-post
-resource "aws_api_gateway_method_response" "get_post_cors" {
+# CORS: OPTIONS for /get-post
+resource "aws_api_gateway_method" "get_post_options" {
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  resource_id   = aws_api_gateway_resource.get_post.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "get_post_options" {
   rest_api_id = aws_api_gateway_rest_api.api.id
   resource_id = aws_api_gateway_resource.get_post.id
-  http_method = aws_api_gateway_method.get_post_get.http_method
+  http_method = aws_api_gateway_method.get_post_options.http_method
+  type        = "MOCK"
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+resource "aws_api_gateway_method_response" "get_post_options" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.get_post.id
+  http_method = aws_api_gateway_method.get_post_options.http_method
   status_code = "200"
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin" = true
-  }
-
-  response_models = {
-    "application/json" = "Empty"
+    "method.response.header.Access-Control-Allow-Origin"  = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Headers" = true
   }
 }
 
-resource "aws_api_gateway_integration_response" "get_post_cors" {
+resource "aws_api_gateway_integration_response" "get_post_options" {
   rest_api_id = aws_api_gateway_rest_api.api.id
   resource_id = aws_api_gateway_resource.get_post.id
-  http_method = aws_api_gateway_method.get_post_get.http_method
-  status_code = aws_api_gateway_method_response.get_post_cors.status_code
+  http_method = aws_api_gateway_method.get_post_options.http_method
+  status_code = aws_api_gateway_method_response.get_post_options.status_code
 
   response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin" = "'*'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+    "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,GET'"
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
   }
 }
 
-# Allow API Gateway to invoke the lambdas
+# ────────────────
+# Lambda Permissions
+# ────────────────
 resource "aws_lambda_permission" "apigw_invoke_new_post" {
   statement_id  = "AllowAPIGatewayInvokeNewPost"
   action        = "lambda:InvokeFunction"
@@ -123,7 +167,6 @@ resource "aws_lambda_permission" "apigw_invoke_get_post" {
   source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
 }
 
-# ✅ Missing one — add this
 resource "aws_lambda_permission" "apigw_invoke_convert_to_audio" {
   statement_id  = "AllowAPIGatewayInvokeConvertToAudio"
   action        = "lambda:InvokeFunction"
@@ -132,13 +175,15 @@ resource "aws_lambda_permission" "apigw_invoke_convert_to_audio" {
   source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
 }
 
-# Deployment & stage
+# ────────────────
+# Deployment
+# ────────────────
 resource "aws_api_gateway_deployment" "deployment" {
   depends_on = [
     aws_api_gateway_integration.new_post_integration,
     aws_api_gateway_integration.get_post_integration,
-    aws_api_gateway_integration_response.new_post_cors,
-    aws_api_gateway_integration_response.get_post_cors
+    aws_api_gateway_integration_response.new_post_options,
+    aws_api_gateway_integration_response.get_post_options
   ]
   rest_api_id = aws_api_gateway_rest_api.api.id
 
