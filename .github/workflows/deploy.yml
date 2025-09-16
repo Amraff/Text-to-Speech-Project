@@ -75,6 +75,7 @@ jobs:
           # Lambda Permissions (only the ones that already exist)
           terraform import aws_lambda_permission.apigw_invoke_new_post polly-new-post/AllowAPIGatewayInvokeNewPost || true
           terraform import aws_lambda_permission.apigw_invoke_get_post polly-get-post/AllowAPIGatewayInvokeGetPost || true
+          terraform import aws_lambda_permission.allow_sns_invoke polly-convert-to-audio/AllowExecutionFromSNS || true
 
       - name: Terraform Apply
         working-directory: terraform
