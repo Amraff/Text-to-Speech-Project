@@ -7,7 +7,7 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(os.environ['DB_TABLE_NAME'])
 
 BUCKET_NAME = os.environ["BUCKET_NAME"]
-REGION = os.environ.get("AWS_REGION", "us-east-1")
+REGION = boto3.session.Session().region_name  # ✅ detect automatically
 
 def lambda_handler(event, context):
     postId = event.get("queryStringParameters", {}).get("postId", "")
@@ -30,7 +30,6 @@ def lambda_handler(event, context):
                 KeyConditionExpression=Key('id').eq(postId)
             )["Items"]
 
-        # Attach S3 URL if audio is completed
         for item in items:
             if item.get("status") == "COMPLETED":
                 item["url"] = f"https://{BUCKET_NAME}.s3.{REGION}.amazonaws.com/{item['id']}.mp3"
