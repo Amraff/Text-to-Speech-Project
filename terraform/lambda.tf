@@ -63,30 +63,3 @@ resource "aws_lambda_permission" "allow_sns_invoke" {
   principal     = "sns.amazonaws.com"
   source_arn    = aws_sns_topic.post_topic.arn
 }
-
-# ✅ Allow API Gateway to invoke the new_post Lambda
-resource "aws_lambda_permission" "apigw_invoke_new_post" {
-  statement_id  = "AllowAPIGatewayInvokeNewPost"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.new_post.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = aws_api_gateway_rest_api.api.execution_arn
-}
-
-# ✅ Allow API Gateway to invoke the convert_to_audio Lambda
-resource "aws_lambda_permission" "apigw_invoke_convert_to_audio" {
-  statement_id  = "AllowAPIGatewayInvokeConvertToAudio"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.convert_to_audio.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = aws_api_gateway_rest_api.api.execution_arn
-}
-
-# ✅ Allow API Gateway to invoke the get_post Lambda
-resource "aws_lambda_permission" "apigw_invoke_get_post" {
-  statement_id  = "AllowAPIGatewayInvokeGetPost"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.get_post.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = aws_api_gateway_rest_api.api.execution_arn
-}

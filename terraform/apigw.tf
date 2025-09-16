@@ -17,10 +17,9 @@ resource "aws_api_gateway_method" "new_post_post" {
 }
 
 resource "aws_api_gateway_integration" "new_post_integration" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
-  resource_id = aws_api_gateway_resource.new_post.id
-  http_method = aws_api_gateway_method.new_post_post.http_method
-
+  rest_api_id             = aws_api_gateway_rest_api.api.id
+  resource_id             = aws_api_gateway_resource.new_post.id
+  http_method             = aws_api_gateway_method.new_post_post.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.new_post.invoke_arn
@@ -44,10 +43,9 @@ resource "aws_api_gateway_method" "get_post_get" {
 }
 
 resource "aws_api_gateway_integration" "get_post_integration" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
-  resource_id = aws_api_gateway_resource.get_post.id
-  http_method = aws_api_gateway_method.get_post_get.http_method
-
+  rest_api_id             = aws_api_gateway_rest_api.api.id
+  resource_id             = aws_api_gateway_resource.get_post.id
+  http_method             = aws_api_gateway_method.get_post_get.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.get_post.invoke_arn
@@ -66,6 +64,15 @@ resource "aws_lambda_permission" "apigw_invoke_get_post" {
   statement_id  = "AllowAPIGatewayInvokeGetPost"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.get_post.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
+}
+
+# ✅ Missing one — add this
+resource "aws_lambda_permission" "apigw_invoke_convert_to_audio" {
+  statement_id  = "AllowAPIGatewayInvokeConvertToAudio"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.convert_to_audio.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.api.execution_arn}/*/*"
 }
