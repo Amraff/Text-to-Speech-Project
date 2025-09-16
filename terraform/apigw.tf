@@ -31,33 +31,6 @@ resource "aws_api_gateway_integration" "new_post_integration" {
   uri                     = aws_lambda_function.new_post.invoke_arn
 }
 
-# ✅ Add CORS headers to POST /new_post response
-resource "aws_api_gateway_method_response" "new_post_post_response" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
-  resource_id = aws_api_gateway_resource.new_post.id
-  http_method = aws_api_gateway_method.new_post_post.http_method
-  status_code = "200"
-
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin" = true
-  }
-
-  response_models = {
-    "application/json" = "Empty"
-  }
-}
-
-resource "aws_api_gateway_integration_response" "new_post_post_response" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
-  resource_id = aws_api_gateway_resource.new_post.id
-  http_method = aws_api_gateway_method.new_post_post.http_method
-  status_code = aws_api_gateway_method_response.new_post_post_response.status_code
-
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin" = "'*'"
-  }
-}
-
 # CORS: OPTIONS for /new_post
 resource "aws_api_gateway_method" "new_post_options" {
   rest_api_id   = aws_api_gateway_rest_api.api.id
@@ -129,33 +102,6 @@ resource "aws_api_gateway_integration" "get_post_integration" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.get_post.invoke_arn
-}
-
-# ✅ Add CORS headers to GET /get-post response
-resource "aws_api_gateway_method_response" "get_post_get_response" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
-  resource_id = aws_api_gateway_resource.get_post.id
-  http_method = aws_api_gateway_method.get_post_get.http_method
-  status_code = "200"
-
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin" = true
-  }
-
-  response_models = {
-    "application/json" = "Empty"
-  }
-}
-
-resource "aws_api_gateway_integration_response" "get_post_get_response" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
-  resource_id = aws_api_gateway_resource.get_post.id
-  http_method = aws_api_gateway_method.get_post_get.http_method
-  status_code = aws_api_gateway_method_response.get_post_get_response.status_code
-
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin" = "'*'"
-  }
 }
 
 # CORS: OPTIONS for /get-post
@@ -237,9 +183,7 @@ resource "aws_api_gateway_deployment" "deployment" {
     aws_api_gateway_integration.new_post_integration,
     aws_api_gateway_integration.get_post_integration,
     aws_api_gateway_integration_response.new_post_options,
-    aws_api_gateway_integration_response.get_post_options,
-    aws_api_gateway_integration_response.new_post_post_response,
-    aws_api_gateway_integration_response.get_post_get_response
+    aws_api_gateway_integration_response.get_post_options
   ]
   rest_api_id = aws_api_gateway_rest_api.api.id
 

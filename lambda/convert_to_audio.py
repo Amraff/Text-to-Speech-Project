@@ -25,7 +25,15 @@ def lambda_handler(event, context):
     item = response.get('Item')
     if not item:
         print(f"No post found with id {post_id}")
-        return {"statusCode": 404, "body": f"No post found with id {post_id}"}
+        return {
+            "statusCode": 404,
+            "headers": {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+                "Access-Control-Allow-Headers": "Content-Type"
+            },
+            "body": json.dumps({"error": f"No post found with id {post_id}"})
+        }
 
     text = item['text']
     voice = item.get('voice', 'Joanna')
@@ -65,5 +73,10 @@ def lambda_handler(event, context):
 
     return {
         "statusCode": 200,
+        "headers": {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+            "Access-Control-Allow-Headers": "Content-Type"
+        },
         "body": json.dumps({"id": post_id, "url": s3_url})
     }

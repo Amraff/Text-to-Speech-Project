@@ -12,13 +12,17 @@ REGION = boto3.session.Session().region_name  # ✅ detect automatically
 def lambda_handler(event, context):
     postId = event.get("queryStringParameters", {}).get("postId", "")
 
+    cors_headers = {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+        "Access-Control-Allow-Headers": "Content-Type"
+    }
+
     if not postId:
         return {
             "statusCode": 400,
-            "headers": {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*"
-            },
+            "headers": cors_headers,
             "body": json.dumps({"error": "Missing or empty postId"})
         }
 
@@ -38,19 +42,13 @@ def lambda_handler(event, context):
 
         return {
             "statusCode": 200,
-            "headers": {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*"
-            },
+            "headers": cors_headers,
             "body": json.dumps(items)
         }
 
     except Exception as e:
         return {
             "statusCode": 500,
-            "headers": {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*"
-            },
+            "headers": cors_headers,
             "body": json.dumps({"error": str(e)})
         }

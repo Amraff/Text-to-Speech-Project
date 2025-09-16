@@ -33,11 +33,15 @@ def lambda_handler(event, context):
         Message=recordId
     )
 
-    return {
-    "statusCode": 200,
-    "headers": {
+    cors_headers = {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
-    },
-    "body": json.dumps(recordId)
-}
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
+        "Access-Control-Allow-Headers": "Content-Type"
+    }
+
+    return {
+        "statusCode": 200,
+        "headers": cors_headers,
+        "body": json.dumps(recordId)
+    }
