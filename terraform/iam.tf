@@ -10,7 +10,7 @@ data "aws_iam_policy_document" "lambda_assume" {
 }
 
 resource "aws_iam_role" "lambda_new_post_role" {
-  name               = "lambda-new-post-role-karim-v2"
+  name               = "lambda-new-post-role-karim-v3"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume.json
 }
 
@@ -47,7 +47,7 @@ resource "aws_iam_role_policy" "lambda_new_post_policy" {
 }
 
 resource "aws_iam_role" "lambda_convert_role" {
-  name               = "lambda-convert-role-karim-v2"
+  name               = "lambda-convert-role-karim-v3"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume.json
 }
 
@@ -99,7 +99,7 @@ resource "aws_iam_role_policy" "lambda_convert_policy" {
 }
 
 resource "aws_iam_role" "lambda_get_role" {
-  name               = "lambda-get-role-karim-v2"
+  name               = "lambda-get-role-karim-v3"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume.json
 }
 

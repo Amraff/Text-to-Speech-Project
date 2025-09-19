@@ -2,7 +2,7 @@
 # API Gateway REST API root
 # ────────────────
 resource "aws_api_gateway_rest_api" "api" {
-  name        = "polly-api-karim-v2"
+  name        = "polly-api-karim-v3"
   description = "API Gateway for Polly text-to-speech app"
 }
 
