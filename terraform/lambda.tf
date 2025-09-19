@@ -33,7 +33,7 @@ resource "aws_lambda_function" "convert_to_audio" {
 }
 
 resource "aws_lambda_function" "get_post" {
-  function_name = "polly-get-post-karim-v2"
+  function_name = "polly-get-post-karim-v3"
   filename      = "${path.module}/../deploy/get_post.zip"
   handler       = "get_post.lambda_handler"
   runtime       = "python3.11"
