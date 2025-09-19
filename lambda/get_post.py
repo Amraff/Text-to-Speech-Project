@@ -35,7 +35,7 @@ def lambda_handler(event, context):
             )["Items"]
 
         for item in items:
-            if item.get("status") == "COMPLETED":
+            if item.get("status") == "completed":
                 item["url"] = f"https://{BUCKET_NAME}.s3.{REGION}.amazonaws.com/{item['id']}.mp3"
             else:
                 item["url"] = None
