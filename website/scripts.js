@@ -35,11 +35,15 @@ document.getElementById("searchButton").onclick = function () {
         success: function (response) {
             $('#posts tr').slice(1).remove();
 
+            console.log("Raw response:", response);
+            console.log("Response type:", typeof response);
+
             if (typeof response === "string") {
                 response = JSON.parse(response);
             }
 
-            console.log("Respuesta:", response);
+            console.log("Parsed response:", response);
+            console.log("Response length:", response.length);
 
             jQuery.each(response, function (i, data) {
                 let player = "";
