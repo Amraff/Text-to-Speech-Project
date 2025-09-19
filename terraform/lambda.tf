@@ -1,5 +1,5 @@
 resource "aws_lambda_function" "new_post" {
-  function_name = "polly-new-post-karim-v3"
+  function_name = "polly-new-post-karim-final"
   filename      = "${path.module}/../deploy/new_post.zip"
   handler       = "handler.lambda_handler"
   runtime       = "python3.11"
@@ -16,7 +16,7 @@ resource "aws_lambda_function" "new_post" {
 }
 
 resource "aws_lambda_function" "convert_to_audio" {
-  function_name = "polly-convert-audio-karim-v3"
+  function_name = "polly-convert-audio-karim-final"
   filename      = "${path.module}/../deploy/convert_to_audio.zip"
   handler       = "convert_to_audio.lambda_handler"
   runtime       = "python3.11"
@@ -33,7 +33,7 @@ resource "aws_lambda_function" "convert_to_audio" {
 }
 
 resource "aws_lambda_function" "get_post" {
-  function_name = "polly-get-post-karim-v3"
+  function_name = "polly-get-post-karim-final"
   filename      = "${path.module}/../deploy/get_post.zip"
   handler       = "get_post.lambda_handler"
   runtime       = "python3.11"
