@@ -43,7 +43,19 @@ document.getElementById("searchButton").onclick = function () {
             }
 
             console.log("Parsed response:", response);
-            console.log("Response length:", response.length);
+            console.log("Response length:", response ? response.length : 0);
+
+            if (!response || response.length === 0) {
+                $("#posts").append("<tr><td colspan='5'>No posts found</td></tr>");
+                return;
+            }
+
+            // Debug each item
+            response.forEach((item, index) => {
+                console.log(`Item ${index}:`, item);
+                console.log(`Item ${index} url:`, item.url);
+                console.log(`Item ${index} status:`, item.status);
+            });
 
             jQuery.each(response, function (i, data) {
                 let player = "";
