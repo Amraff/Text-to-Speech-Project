@@ -86,6 +86,12 @@ jobs:
           terraform import aws_lambda_function.convert_to_audio polly-convert-audio-karim-new || true
           terraform import aws_lambda_function.get_post polly-get-post-karim-new || true
 
+          # Lambda Permissions
+          terraform import aws_lambda_permission.apigw_invoke_new_post polly-new-post-karim-new/AllowAPIGatewayInvokeNewPost || true
+          terraform import aws_lambda_permission.apigw_invoke_get_post polly-get-post-karim-new/AllowAPIGatewayInvokeGetPost || true
+          terraform import aws_lambda_permission.apigw_invoke_convert_to_audio polly-convert-audio-karim-new/AllowAPIGatewayInvokeConvertToAudio || true
+          terraform import aws_lambda_permission.allow_sns_invoke polly-convert-audio-karim-new/AllowExecutionFromSNS || true
+
       - name: Terraform Apply
         if: github.event.inputs.action == 'deploy' || github.event_name == 'push'
         working-directory: terraform
